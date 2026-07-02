@@ -1,3 +1,12 @@
+## 1.0.2 (2026-07-03)
+
+* docs: expand README with CI secrets, package contents, and license details
+* chore: add repository metadata and include CHANGELOG in published package
+
+## 1.0.1 (2026-07-03)
+
+* chore(release): manual version bump
+
 ## 1.0.0 (2026-07-02)
 
 * fix: add NODE_AUTH_TOKEN to release workflow for authentication ([cd9ab77](https://github.com/Colveor/devkit/commit/cd9ab77))

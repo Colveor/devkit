@@ -1,5 +1,8 @@
 # @colveor/devkit
 
+[![npm version](https://img.shields.io/npm/v/@colveor/devkit.svg)](https://www.npmjs.com/package/@colveor/devkit)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 Shared development toolkit for every package in the Colveor ecosystem. Instead of copying TypeScript, ESLint, Prettier, Jest, and release configuration into each repository, extend or import settings from this package.
 
 ## Purpose
@@ -167,7 +170,27 @@ The shared config supports:
 - GitHub Releases
 - Git commits for version bumps
 
-Set `NPM_TOKEN` and `GITHUB_TOKEN` secrets in your CI environment. See `.github/workflows/release.yml` in this repository for a reference workflow.
+### CI secrets
+
+Configure these GitHub Actions secrets in your repository:
+
+| Secret         | Purpose                                                            |
+| -------------- | ------------------------------------------------------------------ |
+| `NPM_TOKEN`    | npm automation or granular token with publish access to your scope |
+| `GITHUB_TOKEN` | Provided automatically by GitHub Actions                           |
+
+When using `actions/setup-node` with `registry-url`, also pass `NODE_AUTH_TOKEN` in the release step (same value as `NPM_TOKEN`):
+
+```yaml
+- name: Release
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+    NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+  run: npx semantic-release
+```
+
+See `.github/workflows/release.yml` in this repository for a complete reference workflow.
 
 ## Commitlint
 
@@ -237,6 +260,23 @@ Recommended workspace settings and extensions are in `.vscode/settings.json` and
 | `commitlint.config.js`  | Conventional Commits rules        |
 | `lint-staged.config.js` | Pre-commit formatting and linting |
 
+## What's included
+
+This package ships ready-to-use configuration for:
+
+- **TypeScript** — base, build, and test tsconfigs
+- **ESLint v9** — flat config with NestJS-friendly rules
+- **Prettier** — consistent formatting defaults
+- **Jest** — ts-jest setup with coverage defaults
+- **Semantic Release** — Conventional Commits, changelog, npm, and GitHub releases
+- **Commitlint** — commit message enforcement
+- **Husky + lint-staged** — local pre-commit and commit-msg hooks
+- **EditorConfig / Git** — editor and line-ending consistency
+- **GitHub** — CI, release workflow, and issue/PR templates
+- **VS Code** — recommended settings and extensions
+
 ## License
 
-MIT
+MIT © 2026 [Skyapp Labs](LICENSE)
+
+See [LICENSE](LICENSE) for the full license text.

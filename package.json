@@ -1,9 +1,18 @@
 {
   "name": "@colveor/devkit",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Shared development toolkit for the Colveor ecosystem.",
   "private": false,
   "license": "MIT",
+  "author": "Skyapp Labs",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Colveor/devkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Colveor/devkit/issues"
+  },
+  "homepage": "https://github.com/Colveor/devkit#readme",
   "engines": {
     "node": ">=20"
   },
@@ -17,7 +26,8 @@
     ".gitattributes",
     ".gitignore",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "CHANGELOG.md"
   ],
   "exports": {
     "./tsconfig.base.json": "./tsconfig.base.json",
