@@ -1,0 +1,16 @@
+{
+  "name":"@colveor/devkit",
+  "version":"1.0.0",
+  "description":"Shared development toolkit for the Colveor ecosystem.",
+  "files":[
+    "*.js",
+    "*.json",
+    ".github",
+    ".vscode",
+    ".editorconfig",
+    ".gitattributes",
+    ".gitignore",
+    "LICENSE",
+    "README.md"
+  ]
+}
