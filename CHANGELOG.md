@@ -1,3 +1,9 @@
+## 1.0.5 (2026-07-03)
+
+* fix(deps): bump `jest` and `ts-jest` peer dependencies to `>=30`
+* fix(deps): pin `unrs-resolver` via npm overrides for consistent ESLint resolution
+* chore(ci): drop lockfile check from devkit CI (`npm ci` remains the gate)
+
 ## <small>1.0.4 (2026-07-03)</small>
 
 * Merge pull request #2 from Colveor/fix/ci-lockfile-sync ([9fbaa7f](https://github.com/colveor/devkit/commit/9fbaa7f)), closes [#2](https://github.com/colveor/devkit/issues/2)
