@@ -1,3 +1,10 @@
+## <small>1.0.4 (2026-07-03)</small>
+
+* Merge pull request #2 from Colveor/fix/ci-lockfile-sync ([9fbaa7f](https://github.com/colveor/devkit/commit/9fbaa7f)), closes [#2](https://github.com/colveor/devkit/issues/2)
+* chore: update lockfile sync check to use npm 10.8.2 ([57a1c8c](https://github.com/colveor/devkit/commit/57a1c8c))
+* fix(ci): add lockfile sync check to shared CI template ([99fa3a9](https://github.com/colveor/devkit/commit/99fa3a9))
+* fix(ci): pin npm version for lockfile sync check ([670a6a1](https://github.com/colveor/devkit/commit/670a6a1))
+
 ## 1.0.4 (2026-07-03)
 
 * fix(ci): add lockfile sync check step to shared CI workflow template
