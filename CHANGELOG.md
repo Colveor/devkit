@@ -1,3 +1,9 @@
+## 1.0.4 (2026-07-03)
+
+* fix(ci): add lockfile sync check step to shared CI workflow template
+* feat(ci): add `lockfile:sync` and `lockfile:check` scripts with shared check script
+* docs: document CI lockfile scripts and reference workflow in README
+
 ## 1.0.3 (2026-07-03)
 
 * chore: disable lint-staged backup stash in pre-commit hook
