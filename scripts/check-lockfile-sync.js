@@ -21,9 +21,11 @@ const updated = fs.readFileSync(lockfilePath, 'utf8');
 
 if (original !== updated) {
   fs.writeFileSync(lockfilePath, original);
+  const npmVersion = execSync('npm -v', { encoding: 'utf8' }).trim();
   console.error(
-    'package-lock.json is out of sync with package.json. Run: npm run lockfile:sync',
+    `package-lock.json is out of sync with package.json (npm ${npmVersion}).`,
   );
+  console.error('Run: corepack enable && npm run lockfile:sync');
   process.exit(1);
 }
 

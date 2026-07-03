@@ -219,7 +219,7 @@ cp node_modules/@colveor/devkit/scripts/check-lockfile-sync.js scripts/
 | `lockfile:check` | Fail if the lockfile is out of sync (used in CI before `npm ci`)        |
 | `validate`       | Optional project-specific checks (JSON configs, env files, etc.)        |
 
-Run `lockfile:sync` locally whenever you edit dependencies, then commit the updated lockfile.
+Run `corepack enable` once per machine, then `lockfile:sync` whenever you edit dependencies and commit the updated lockfile. The `packageManager` field pins npm so lockfiles match CI (Node 20 / npm 10).
 
 Reference workflow (lockfile check runs **before** install — no `node_modules` required):
 
@@ -229,6 +229,9 @@ Reference workflow (lockfile check runs **before** install — no `node_modules`
   with:
     node-version: 20
     cache: npm
+
+- name: Enable Corepack
+  run: corepack enable
 
 - name: Check lockfile sync
   run: npm run lockfile:check
