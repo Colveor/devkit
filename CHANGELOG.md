@@ -1,3 +1,9 @@
+## <small>1.0.5 (2026-07-03)</small>
+
+* Merge pull request #3 from Colveor/v1.0.5 ([65439d5](https://github.com/colveor/devkit/commit/65439d5)), closes [#3](https://github.com/colveor/devkit/issues/3)
+* fix(deps): prepare 1.0.5 release ([0f5a8ec](https://github.com/colveor/devkit/commit/0f5a8ec))
+* chore: clean ups ([1ea5ba5](https://github.com/colveor/devkit/commit/1ea5ba5))
+
 ## 1.0.5 (2026-07-03)
 
 * fix(deps): bump `jest` and `ts-jest` peer dependencies to `>=30`
