@@ -1,3 +1,9 @@
+## 1.0.3 (2026-07-03)
+
+* chore: disable lint-staged backup stash in pre-commit hook
+* docs: update README pre-commit setup to use `--no-stash`
+* chore: normalize GitHub repository URLs to lowercase org name
+
 ## 1.0.2 (2026-07-03)
 
 * docs: expand README with CI secrets, package contents, and license details

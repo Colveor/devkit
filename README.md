@@ -31,7 +31,7 @@ npx husky init
 Then wire Husky to the shared configs:
 
 ```bash
-echo "npx lint-staged --config node_modules/@colveor/devkit/lint-staged.config.js" > .husky/pre-commit
+echo "npx lint-staged --no-stash --config node_modules/@colveor/devkit/lint-staged.config.js" > .husky/pre-commit
 echo 'npx --no -- commitlint --config node_modules/@colveor/devkit/commitlint.config.js --edit "$1"' > .husky/commit-msg
 ```
 
