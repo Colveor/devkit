@@ -1,6 +1,6 @@
 {
   "name": "@colveor/devkit",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Shared development toolkit for the Colveor ecosystem.",
   "private": false,
   "license": "MIT",
@@ -27,7 +27,8 @@
     ".gitignore",
     "LICENSE",
     "README.md",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "scripts"
   ],
   "exports": {
     "./tsconfig.base.json": "./tsconfig.base.json",
@@ -38,13 +39,16 @@
     "./jest.config.js": "./jest.config.js",
     "./release.config.js": "./release.config.js",
     "./commitlint.config.js": "./commitlint.config.js",
-    "./lint-staged.config.js": "./lint-staged.config.js"
+    "./lint-staged.config.js": "./lint-staged.config.js",
+    "./scripts/check-lockfile-sync.js": "./scripts/check-lockfile-sync.js"
   },
   "scripts": {
     "prepare": "husky",
     "lint": "eslint .",
     "format": "prettier --check .",
     "format:write": "prettier --write .",
+    "lockfile:sync": "npm install --package-lock-only --ignore-scripts --no-audit",
+    "lockfile:check": "node scripts/check-lockfile-sync.js",
     "validate": "node scripts/validate-configs.js"
   },
   "dependencies": {
