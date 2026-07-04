@@ -2,7 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-const rootDir = path.resolve(__dirname, '..');
+const rootDir = process.env.npm_package_json
+  ? path.dirname(process.env.npm_package_json)
+  : process.cwd();
 const vendorDir = path.resolve(rootDir, 'example/vendor');
 
 fs.mkdirSync(vendorDir, { recursive: true });
@@ -34,4 +36,4 @@ fs.copyFileSync(path.join(vendorDir, tgz), stableName);
 //delete the tgz file
 fs.unlinkSync(path.join(vendorDir, tgz));
 
-console.log(`Renamed to\x1b[36m colveor-package.tgz\x1b[0m in\x1b[33m example/vendor\x1b[0m`);
+console.log(`Renamed to\x1b[36m release.tgz\x1b[0m in\x1b[33m example/vendor\x1b[0m`);
