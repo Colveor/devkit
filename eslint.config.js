@@ -34,8 +34,10 @@ const sharedRules = {
   '@typescript-eslint/strict-boolean-expressions': [
     'warn',
     {
-      allowString: false,
-      allowNumber: false,
+      allowString: true,
+      allowNullableString: true,
+      allowNumber: true,
+      allowNullableNumber: true,
       allowNullableObject: true,
       allowNullableBoolean: true,
     },
