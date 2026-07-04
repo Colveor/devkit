@@ -196,33 +196,6 @@ See `.github/workflows/release.yml` in this repository for a complete reference 
 
 Copy `.github/workflows/ci.yml` from this package as a starting point, or mirror its steps in your own workflow.
 
-Add these scripts to your `package.json` (copy `scripts/check-lockfile-sync.js` from this package into your repo — it has no dependencies and must exist before `npm ci` in CI):
-
-```bash
-mkdir -p scripts
-cp node_modules/@colveor/devkit/scripts/check-lockfile-sync.js scripts/
-```
-
-```json
-{
-  "scripts": {
-    "lockfile:sync": "npm install --package-lock-only --ignore-scripts --no-audit",
-    "lockfile:check": "node scripts/check-lockfile-sync.js",
-    "validate": "node scripts/validate-configs.js"
-  }
-}
-```
-
-| Script           | Purpose                                                                 |
-| ---------------- | ----------------------------------------------------------------------- |
-| `lockfile:sync`  | Regenerate `package-lock.json` after changing `package.json`            |
-| `lockfile:check` | Fail if the lockfile is out of sync (used in CI before `npm ci`)        |
-| `validate`       | Optional project-specific checks (JSON configs, env files, etc.)        |
-
-Run `corepack enable` once per machine, then `lockfile:sync` whenever you edit dependencies and commit the updated lockfile. The `packageManager` field pins npm so lockfiles match CI (Node 20 / npm 10).
-
-Reference workflow (lockfile check runs **before** install — no `node_modules` required):
-
 ```yaml
 - name: Setup Node.js
   uses: actions/setup-node@v4
@@ -232,9 +205,6 @@ Reference workflow (lockfile check runs **before** install — no `node_modules`
 
 - name: Enable Corepack
   run: corepack enable
-
-- name: Check lockfile sync
-  run: npm run lockfile:check
 
 - name: Install dependencies
   run: npm ci
@@ -258,7 +228,7 @@ module.exports = require('@colveor/devkit/commitlint.config.js');
 
 Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-```
+```text
 feat(storage): add S3 adapter
 fix(api): handle null tenant id
 chore: update devkit
@@ -314,8 +284,7 @@ Recommended workspace settings and extensions are in `.vscode/settings.json` and
 | `jest.config.js`        | Jest + ts-jest defaults           |
 | `release.config.js`     | Semantic Release pipeline         |
 | `commitlint.config.js`  | Conventional Commits rules        |
-| `lint-staged.config.js`        | Pre-commit formatting and linting |
-| `scripts/check-lockfile-sync.js` | Lockfile sync check for CI        |
+| `lint-staged.config.js` | Pre-commit formatting and linting |
 
 ## What's included
 
