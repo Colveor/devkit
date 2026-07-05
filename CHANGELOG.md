@@ -1,3 +1,11 @@
+## 1.1.0 (2026-07-05)
+
+* feat: add API documentation generation script and integrate openapi-to-postmanv2 dependency ([c20b498](https://github.com/colveor/devkit/commit/c20b498))
+* chore: release version 1.0.6, added script and update .gitignore ([9f86c28](https://github.com/colveor/devkit/commit/9f86c28))
+* chore: release version 1.0.7, update pack-local script and rename output file ([207f3a1](https://github.com/colveor/devkit/commit/207f3a1))
+* chore: update ESLint and release version 1.0.9 ([b1df311](https://github.com/colveor/devkit/commit/b1df311))
+* chore: update ts-jest peer dependency version to >=29 ([de993d2](https://github.com/colveor/devkit/commit/de993d2))
+
 ## <small>1.0.5 (2026-07-03)</small>
 
 * Merge pull request #3 from Colveor/v1.0.5 ([65439d5](https://github.com/colveor/devkit/commit/65439d5)), closes [#3](https://github.com/colveor/devkit/issues/3)
