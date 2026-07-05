@@ -1,3 +1,7 @@
+## 1.2.0 (2026-07-05)
+
+* feat: generate a global index.json manifest in api-docs script and bump package version to 1.2.0 ([0bba755](https://github.com/colveor/devkit/commit/0bba755))
+
 ## 1.1.0 (2026-07-05)
 
 * feat: add API documentation generation script and integrate openapi-to-postmanv2 dependency ([c20b498](https://github.com/colveor/devkit/commit/c20b498))
