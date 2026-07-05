@@ -1,6 +1,6 @@
 {
   "name": "@colveor/devkit",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "description": "Shared development toolkit for the Colveor ecosystem.",
   "private": false,
   "license": "MIT",
@@ -41,7 +41,8 @@
     "./release.config.js": "./release.config.js",
     "./commitlint.config.js": "./commitlint.config.js",
     "./lint-staged.config.js": "./lint-staged.config.js",
-    "./pack-local.js": "./scripts/pack-local.js"
+    "./pack-local.js": "./scripts/pack-local.js",
+    "./generate-api-docs.js": "./scripts/generate-api-docs.js"
   },
   "scripts": {
     "prepare": "husky",
@@ -64,7 +65,8 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
     "semantic-release": "^24.2.5",
-    "typescript-eslint": "^8.37.0"
+    "typescript-eslint": "^8.37.0",
+    "openapi-to-postmanv2": "^6.2.0"
   },
   "peerDependencies": {
     "@types/jest": ">=29",
