@@ -11,6 +11,7 @@ const crypto = require('crypto');
  * Output structure:
  *
  * docs/
+ * ├── index.json
  * ├── core/
  * │   ├── openapi.json
  * │   ├── postman_collection.json
@@ -66,9 +67,7 @@ const crypto = require('crypto');
  * @example
  * await generateSwaggerDocs({
  *   app,
- *
  *   output: './docs',
- *
  *   modules: [
  *     {
  *       name: 'core',
@@ -83,7 +82,6 @@ const crypto = require('crypto');
  *       description: 'Fintech module endpoints',
  *     },
  *   ],
- *
  *   environments: {
  *     local: {
  *       baseUrl: 'http://localhost:3000',
@@ -93,7 +91,6 @@ const crypto = require('crypto');
  *         tenant_id: '',
  *       },
  *     },
- *
  *     staging: {
  *       baseUrl: 'https://staging.example.com',
  *       variables: {
@@ -101,7 +98,6 @@ const crypto = require('crypto');
  *         refresh_token: '',
  *       },
  *     },
- *
  *     production: {
  *       baseUrl: 'https://api.example.com',
  *       variables: {
@@ -115,9 +111,11 @@ const crypto = require('crypto');
 async function generateSwaggerDocs(options) {
   const output = options.output || './docs';
 
-  fs.mkdirSync(output, {
-    recursive: true,
-  });
+  fs.mkdirSync(output, { recursive: true });
+
+  const packageJson = require(path.join(process.cwd(), 'package.json'));
+
+  const generatedModules = [];
 
   for (const moduleConfig of options.modules) {
     const swaggerConfig = new DocumentBuilder()
@@ -132,34 +130,67 @@ async function generateSwaggerDocs(options) {
       deepScanRoutes: true,
     });
 
-    await generateModule(output, moduleConfig.name, document, options.environments || {});
+    const moduleMeta = await generateModule(
+      output,
+      moduleConfig,
+      document,
+      options.environments || {},
+      packageJson,
+    );
+
+    generatedModules.push(moduleMeta);
   }
+
+  // -----------------------------
+  // INDEX.JSON (GLOBAL MANIFEST)
+  // -----------------------------
+  const index = {
+    schemaVersion: '1.0.0',
+
+    generatedAt: new Date().toISOString(),
+
+    generator: {
+      name: '@colveor/devkit',
+    },
+
+    package: {
+      name: packageJson.name,
+      version: packageJson.version,
+    },
+
+    summary: {
+      modules: generatedModules.length,
+      environments: Object.keys(options.environments || {}),
+    },
+
+    modules: generatedModules,
+  };
+
+  fs.writeFileSync(path.join(output, 'index.json'), JSON.stringify(index, null, 2));
+
+  console.log(`✓ Documentation generated at ${output}`);
 }
 
-async function generateModule(output, name, document, environments) {
-  const moduleDir = path.join(output, name);
+/**
+ * Generate docs for a single module
+ */
+async function generateModule(output, moduleConfig, document, environments, packageJson) {
+  const moduleDir = path.join(output, moduleConfig.name);
   const envDir = path.join(moduleDir, 'environments');
 
-  fs.mkdirSync(moduleDir, {
-    recursive: true,
-  });
+  fs.mkdirSync(moduleDir, { recursive: true });
+  fs.mkdirSync(envDir, { recursive: true });
 
-  fs.mkdirSync(envDir, {
-    recursive: true,
-  });
-
-  //-----------------------------------------
-  // OpenAPI
-  //-----------------------------------------
-
+  // -----------------------------
+  // OpenAPI JSON
+  // -----------------------------
   const openApi = JSON.stringify(document, null, 2);
 
   fs.writeFileSync(path.join(moduleDir, 'openapi.json'), openApi);
 
-  //-----------------------------------------
+  // -----------------------------
   // Postman Collection
-  //-----------------------------------------
-
+  // -----------------------------
   await new Promise((resolve, reject) => {
     Converter.convert(
       {
@@ -172,12 +203,10 @@ async function generateModule(output, name, document, environments) {
         exampleParametersResolution: 'Example',
       },
       (err, result) => {
-        if (err) {
-          return reject(err);
-        }
+        if (err) return reject(err);
 
         if (!result?.result) {
-          return reject(result?.reason || 'Conversion failed');
+          return reject(result?.reason || 'Postman conversion failed');
         }
 
         const collection = result.output?.[0]?.data;
@@ -186,7 +215,7 @@ async function generateModule(output, name, document, environments) {
           return reject('No Postman collection generated');
         }
 
-        collection.info.name = name;
+        collection.info.name = moduleConfig.name;
 
         fs.writeFileSync(
           path.join(moduleDir, 'postman_collection.json'),
@@ -198,20 +227,25 @@ async function generateModule(output, name, document, environments) {
     );
   });
 
-  //-----------------------------------------
+  // -----------------------------
   // Environments
-  //-----------------------------------------
+  // -----------------------------
+  const envMap = {};
 
-  for (const [envName, config] of Object.entries(environments)) {
+  for (const [envName, envConfig] of Object.entries(environments)) {
+    const baseUrl = typeof envConfig === 'string' ? envConfig : envConfig.baseUrl;
+
+    const variables = typeof envConfig === 'string' ? {} : envConfig.variables || {};
+
     const values = [
       {
         key: 'base_url',
-        value: config.baseUrl,
+        value: baseUrl,
         enabled: true,
       },
     ];
 
-    for (const [key, value] of Object.entries(config.variables || {})) {
+    for (const [key, value] of Object.entries(variables)) {
       values.push({
         key,
         value,
@@ -219,19 +253,41 @@ async function generateModule(output, name, document, environments) {
       });
     }
 
-    const environment = {
-      id: crypto.randomUUID(),
-      name: envName,
-      values,
-    };
+    const filePath = path.join(envDir, `${envName}.postman_environment.json`);
 
     fs.writeFileSync(
-      path.join(envDir, `${envName}.postman_environment.json`),
-      JSON.stringify(environment, null, 2),
+      filePath,
+      JSON.stringify(
+        {
+          id: crypto.randomUUID(),
+          name: envName,
+          values,
+        },
+        null,
+        2,
+      ),
     );
+
+    envMap[envName] = `${moduleConfig.name}/environments/${envName}.postman_environment.json`;
   }
 
-  console.log(`✓ ${name} documentation generated`);
+  // -----------------------------
+  // MODULE METADATA (for index.json)
+  // -----------------------------
+  return {
+    id: moduleConfig.name,
+    name: moduleConfig.name,
+    title: moduleConfig.title,
+    description: moduleConfig.description || '',
+    version: moduleConfig.version || packageJson.version,
+
+    files: {
+      openapi: `${moduleConfig.name}/openapi.json`,
+      postmanCollection: `${moduleConfig.name}/postman_collection.json`,
+    },
+
+    environments: envMap,
+  };
 }
 
 module.exports = {

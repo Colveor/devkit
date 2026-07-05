@@ -12,5 +12,14 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "eslint.useFlatConfig": true,
   "eslint.validate": ["javascript", "typescript"],
-  "cSpell.words": ["Colveor", "commitlint", "husky", "lintstaged", "postmanv", "Skyapp", "unrs"]
+  "cSpell.words": [
+    "Colveor",
+    "commitlint",
+    "fintech",
+    "husky",
+    "lintstaged",
+    "postmanv",
+    "Skyapp",
+    "unrs"
+  ]
 }
