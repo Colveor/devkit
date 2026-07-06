@@ -1,3 +1,7 @@
+## 1.4.0 (2026-07-06)
+
+* feat: release 1.4.0 ([4f11e2f](https://github.com/colveor/devkit/commit/4f11e2f))
+
 ## 1.3.0 (2026-07-06)
 
 * feat: bump version to 1.4.0 and update Postman environment variable names ([1754d98](https://github.com/colveor/devkit/commit/1754d98))
