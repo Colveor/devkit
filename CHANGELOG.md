@@ -1,3 +1,7 @@
+## 1.6.0 (2026-07-06)
+
+* feat: bump version to 1.6.0 and update refresh token key in API docs script ([854f8b1](https://github.com/colveor/devkit/commit/854f8b1))
+
 ## 1.5.0 (2026-07-06)
 
 * feat: bump version to 1.5.0 and add Postman auth inheritance normalization ([7eaddba](https://github.com/colveor/devkit/commit/7eaddba))
