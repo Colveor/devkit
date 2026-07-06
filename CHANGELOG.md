@@ -1,3 +1,7 @@
+## 1.5.0 (2026-07-06)
+
+* feat: bump version to 1.5.0 and add Postman auth inheritance normalization ([7eaddba](https://github.com/colveor/devkit/commit/7eaddba))
+
 ## 1.4.0 (2026-07-06)
 
 * feat: release 1.4.0 ([4f11e2f](https://github.com/colveor/devkit/commit/4f11e2f))
