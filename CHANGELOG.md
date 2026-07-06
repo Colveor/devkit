@@ -1,3 +1,8 @@
+## 1.3.0 (2026-07-06)
+
+* feat: bump version to 1.4.0 and update Postman environment variable names ([1754d98](https://github.com/colveor/devkit/commit/1754d98))
+* refactor: consolidate generated Postman collections and add automated token refresh support ([daef62b](https://github.com/colveor/devkit/commit/daef62b))
+
 ## 1.2.0 (2026-07-05)
 
 * feat: generate a global index.json manifest in api-docs script and bump package version to 1.2.0 ([0bba755](https://github.com/colveor/devkit/commit/0bba755))
