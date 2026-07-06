@@ -158,6 +158,11 @@ const crypto = require('crypto');
 async function generateSwaggerDocs(options) {
   const output = options.output || './docs';
 
+  // delete the output directory if it exists
+  if (fs.existsSync(output)) {
+    fs.rmSync(output, { recursive: true });
+  }
+
   fs.mkdirSync(output, { recursive: true });
 
   const openApiDir = path.join(output, 'openapi');
@@ -206,16 +211,12 @@ async function generateSwaggerDocs(options) {
   const auth = options.auth || {};
   const refreshPath = auth.refreshPath || '/auth/refresh';
   const refreshKey = auth.refreshBodyKey || 'refresh_token';
-  const tokenRespPath = auth.tokenResponsePath !== undefined ? auth.tokenResponsePath : 'data';
-
-  // Helper used inside the script to resolve nested token paths, e.g. json.data
-  const tokenAccessor = tokenRespPath ? `json.${tokenRespPath}` : 'json';
 
   // --- Pre-request: auto-refresh when access token is expired ---
   const defaultPrerequest = `
 // Auto-refresh access token when it is expired or about to expire (60 s buffer).
-var accessToken  = pm.environment.get('access_token');
-var refreshToken = pm.environment.get('refresh_token');
+var accessToken  = pm.environment.get('accessToken');
+var refreshToken = pm.environment.get('refreshToken');
 
 if (!accessToken || !refreshToken) return;
 
@@ -226,7 +227,7 @@ function isExpired(token) {
         return payload.exp * 1000 < Date.now() + 60000; // 60 s buffer
     } catch (e) {
         // Fallback: use stored expiry timestamp
-        var expiry = pm.environment.get('token_expiry');
+        var expiry = pm.environment.get('tokenExpiresIn');
         return !expiry || Date.now() >= (parseInt(expiry) - 60000);
     }
 }
@@ -234,7 +235,7 @@ function isExpired(token) {
 if (!isExpired(accessToken)) return;
 
 // Token is expired — refresh it synchronously before the request fires.
-var baseUrl = pm.environment.get('base_url');
+var baseUrl = pm.environment.get('baseUrl');
 pm.sendRequest({
     url: baseUrl + '${refreshPath}',
     method: 'POST',
@@ -246,12 +247,11 @@ pm.sendRequest({
         return;
     }
     try {
-        var json = res.json();
-        var tokens = ${tokenAccessor};
-        if (tokens.access_token)  pm.environment.set('access_token',  tokens.access_token);
-        if (tokens.refresh_token) pm.environment.set('refresh_token', tokens.refresh_token);
-        if (tokens.expires_in) {
-            pm.environment.set('token_expiry', String(Date.now() + tokens.expires_in * 1000));
+        var tokens = res.json();
+        if (tokens.accessToken) pm.environment.set('accessToken',  tokens.accessToken);
+        if (tokens.refreshToken) pm.environment.set('refreshToken', tokens.refreshToken);
+        if (tokens.expiresIn) {
+            pm.environment.set('tokenExpiresIn', String(Date.now() + tokens.expiresIn * 1000));
         }
         console.log('[auth] Access token refreshed successfully.');
     } catch (e) { console.warn('[auth] Could not parse refresh response:', e); }
@@ -260,15 +260,14 @@ pm.sendRequest({
 
   // --- Test (post-response): capture tokens from any auth response ---
   const defaultTest = `
-// Capture access_token / refresh_token from any response that contains them.
+// Capture accessToken / refreshToken from any response that contains them.
 try {
-    var json = pm.response.json();
-    var tokens = ${tokenAccessor};
+    var tokens = pm.response.json();
     if (!tokens) return;
-    if (tokens.access_token)  pm.environment.set('access_token',  tokens.access_token);
-    if (tokens.refresh_token) pm.environment.set('refresh_token', tokens.refresh_token);
-    if (tokens.expires_in) {
-        pm.environment.set('token_expiry', String(Date.now() + tokens.expires_in * 1000));
+    if (tokens.accessToken) pm.environment.set('accessToken',  tokens.accessToken);
+    if (tokens.refreshToken) pm.environment.set('refreshToken', tokens.refreshToken);
+    if (tokens.expiresIn) {
+        pm.environment.set('tokenExpiresIn', String(Date.now() + tokens.expiresIn * 1000));
     }
 } catch (e) { /* response is not JSON or has no tokens — ignore */ }
 `.trim();
@@ -297,7 +296,7 @@ try {
     item: mergedItems,
     auth: {
       type: 'bearer',
-      bearer: [{ key: 'token', value: '{{access_token}}', type: 'string' }],
+      bearer: [{ key: 'token', value: '{{accessToken}}', type: 'string' }],
     },
   };
 
@@ -317,7 +316,7 @@ try {
     const baseUrl = typeof envConfig === 'string' ? envConfig : envConfig.baseUrl;
     const variables = typeof envConfig === 'string' ? {} : envConfig.variables || {};
 
-    const values = [{ key: 'base_url', value: baseUrl, type: 'default', enabled: true }];
+    const values = [{ key: 'baseUrl', value: baseUrl, type: 'default', enabled: true }];
 
     for (const [key, value] of Object.entries(variables)) {
       values.push({ key, value, type: 'default', enabled: true });

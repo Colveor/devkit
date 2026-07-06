@@ -1,6 +1,6 @@
 {
   "name": "@colveor/devkit",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Shared development toolkit for the Colveor ecosystem.",
   "private": false,
   "license": "MIT",
