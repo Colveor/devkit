@@ -210,7 +210,7 @@ async function generateSwaggerDocs(options) {
   // --- Auth config (used by built-in scripts) ---
   const auth = options.auth || {};
   const refreshPath = auth.refreshPath || '/auth/refresh';
-  const refreshKey = auth.refreshBodyKey || 'refresh_token';
+  const refreshKey = auth.refreshBodyKey || 'refreshToken';
 
   // --- Pre-request: auto-refresh when access token is expired ---
   const defaultPrerequest = `
