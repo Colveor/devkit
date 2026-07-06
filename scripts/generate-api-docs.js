@@ -300,6 +300,8 @@ try {
     },
   };
 
+  setPostmanAuthInheritance(mergedCollection.item);
+
   fs.writeFileSync(
     path.join(output, 'postman_collection.json'),
     JSON.stringify(mergedCollection, null, 2),
@@ -378,6 +380,48 @@ try {
 }
 
 /**
+ * Normalize Postman auth so child items inherit from the collection.
+ *
+ * Postman represents "inherit" by omitting the auth field entirely — not
+ * `{ type: 'inherit' }`, which Newman/Postman runtime cannot execute.
+ *
+ * @param {Array<Object>} items
+ */
+function setPostmanAuthInheritance(items) {
+  if (!Array.isArray(items)) return;
+
+  for (const item of items) {
+    if (item.request) {
+      const authType = item.request.auth?.type;
+
+      // Keep explicit no-auth endpoints (e.g. login). Strip bearer/apikey
+      // added by openapi-to-postman so collection-level auth applies instead.
+      if (authType && authType !== 'noauth') {
+        delete item.request.auth;
+        delete item.request.currentHelper;
+        delete item.request.helperAttributes;
+
+        if (Array.isArray(item.request.header)) {
+          item.request.header = item.request.header.filter(
+            (header) => header.key?.toLowerCase() !== 'authorization',
+          );
+        }
+      }
+
+      delete item.auth;
+    } else {
+      delete item.auth;
+      delete item.currentHelper;
+      delete item.helperAttributes;
+    }
+
+    if (Array.isArray(item.item)) {
+      setPostmanAuthInheritance(item.item);
+    }
+  }
+}
+
+/**
  * Generate docs for a single module.
  * Writes openapi.json and pushes the module's Postman items into mergedItems.
  *
@@ -426,6 +470,8 @@ async function generateModule(output, moduleConfig, document, packageJson, merge
           description: moduleConfig.description || '',
           item: collection.item || [],
         };
+
+        setPostmanAuthInheritance(moduleFolder.item);
 
         mergedItems.push(moduleFolder);
 
