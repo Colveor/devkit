@@ -1,3 +1,14 @@
+## [1.7.0](https://github.com/colveor/devkit/compare/v1.6.0...v1.7.0) (2026-07-20)
+
+### Features
+
+* add library presets, init-library scaffold, and CI templates ([ea3cd80](https://github.com/colveor/devkit/commit/ea3cd805a3378f3ce0c457cba40af1993505889d))
+
+### Bug Fixes
+
+* **release:** add conventional-changelog-conventionalcommits dependency ([f737b85](https://github.com/colveor/devkit/commit/f737b858fe3f7960db251d553b625b3ef3a487ec))
+* **release:** restore semver baseline and trigger 1.7.0 publish ([fe6aa9b](https://github.com/colveor/devkit/commit/fe6aa9b928c10d299cd30c35cbc5678703377dd6))
+
 ## 1.6.0 (2026-07-06)
 
 * feat: bump version to 1.6.0 and update refresh token key in API docs script ([854f8b1](https://github.com/colveor/devkit/commit/854f8b1))
