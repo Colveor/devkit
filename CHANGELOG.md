@@ -1,11 +1,3 @@
-## 1.7.0 (2026-07-20)
-
-* feat: add library presets for ESLint, Jest, and Prettier
-* feat: generalize pack-local.js with env var overrides
-* feat: add init-library scaffolding script
-* feat: add library CI and release workflow templates
-* fix: correct OpenAPI path in generate-api-docs index metadata
-
 ## 1.6.0 (2026-07-06)
 
 * feat: bump version to 1.6.0 and update refresh token key in API docs script ([854f8b1](https://github.com/colveor/devkit/commit/854f8b1))
