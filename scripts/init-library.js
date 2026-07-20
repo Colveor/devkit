@@ -29,8 +29,6 @@ function copy(relativePath) {
   console.log(`copy  ${relativePath}`);
 }
 
-const mapperName = packageName.replace('@colveor/', '').replace(/-/g, '_');
-
 write(
   'eslint.config.js',
   `const baseConfig = require('@colveor/devkit/eslint.library.config.js');

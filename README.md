@@ -297,30 +297,30 @@ Defaults:
 
 Override with environment variables when needed:
 
-| Variable | Default | Purpose |
-| -------- | ------- | ------- |
-| `PACK_LOCAL_EXAMPLE_DIR` | `example` | Example app directory |
-| `PACK_LOCAL_VENDOR_DIR` | `<example>/vendor` | Output directory |
-| `PACK_LOCAL_STABLE_NAME` | `release.tgz` | Stable tarball filename |
-| `PACK_LOCAL_SCOPE_PREFIX` | `colveor` | npm pack filename prefix filter |
+| Variable                  | Default            | Purpose                         |
+| ------------------------- | ------------------ | ------------------------------- |
+| `PACK_LOCAL_EXAMPLE_DIR`  | `example`          | Example app directory           |
+| `PACK_LOCAL_VENDOR_DIR`   | `<example>/vendor` | Output directory                |
+| `PACK_LOCAL_STABLE_NAME`  | `release.tgz`      | Stable tarball filename         |
+| `PACK_LOCAL_SCOPE_PREFIX` | `colveor`          | npm pack filename prefix filter |
 
 ## Package contents
 
-| Export                    | Description                                    |
-| ------------------------- | ---------------------------------------------- |
-| `tsconfig.base.json`      | Base TypeScript compiler options               |
-| `tsconfig.build.json`     | Production build preset                        |
-| `tsconfig.test.json`      | Jest and test file preset                      |
-| `eslint.config.js`        | ESLint v9 flat config                          |
-| `eslint.library.config.js`| ESLint preset for NestJS libraries             |
-| `prettier.library.config.js`| Prettier preset for NestJS libraries (tabs)    |
-| `jest.config.js`          | Jest + ts-jest defaults                        |
-| `jest.library.config.js`  | Jest preset for `test/**/*.spec.ts` layout     |
-| `release.config.js`       | Semantic Release pipeline                      |
-| `lint-staged.config.js`   | Optional pre-commit formatting and linting     |
-| `pack-local.js`           | Build + pack tarball for local example apps    |
-| `init-library.js`         | Scaffold a new Colveor NestJS library          |
-| `generate-api-docs.js`    | OpenAPI + Postman doc generation helper        |
+| Export                       | Description                                 |
+| ---------------------------- | ------------------------------------------- |
+| `tsconfig.base.json`         | Base TypeScript compiler options            |
+| `tsconfig.build.json`        | Production build preset                     |
+| `tsconfig.test.json`         | Jest and test file preset                   |
+| `eslint.config.js`           | ESLint v9 flat config                       |
+| `eslint.library.config.js`   | ESLint preset for NestJS libraries          |
+| `prettier.library.config.js` | Prettier preset for NestJS libraries (tabs) |
+| `jest.config.js`             | Jest + ts-jest defaults                     |
+| `jest.library.config.js`     | Jest preset for `test/**/*.spec.ts` layout  |
+| `release.config.js`          | Semantic Release pipeline                   |
+| `lint-staged.config.js`      | Optional pre-commit formatting and linting  |
+| `pack-local.js`              | Build + pack tarball for local example apps |
+| `init-library.js`            | Scaffold a new Colveor NestJS library       |
+| `generate-api-docs.js`       | OpenAPI + Postman doc generation helper     |
 
 ## What's included
 
