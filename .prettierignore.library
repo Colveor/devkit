@@ -1,0 +1,7 @@
+node_modules/
+coverage/
+dist/
+vendor/
+*.tsbuildinfo
+CHANGELOG.md
+package-lock.json

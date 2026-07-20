@@ -5,35 +5,39 @@ const { execSync } = require('child_process');
 const rootDir = process.env.npm_package_json
   ? path.dirname(process.env.npm_package_json)
   : process.cwd();
-const vendorDir = path.resolve(rootDir, 'example/vendor');
+
+const exampleDir = process.env.PACK_LOCAL_EXAMPLE_DIR || 'example';
+const vendorDir = path.resolve(
+  rootDir,
+  process.env.PACK_LOCAL_VENDOR_DIR || path.join(exampleDir, 'vendor'),
+);
+const stableName = process.env.PACK_LOCAL_STABLE_NAME || 'release.tgz';
+const scopePrefix = process.env.PACK_LOCAL_SCOPE_PREFIX || 'colveor';
 
 fs.mkdirSync(vendorDir, { recursive: true });
 
 // Build first so the packed tarball contains fresh dist output
 execSync('npm run build', { stdio: 'inherit', cwd: rootDir });
 
-// Pack into example/vendor
 execSync(`npm pack --pack-destination "${vendorDir}"`, {
   stdio: 'inherit',
   cwd: rootDir,
 });
 
-// Find the generated tgz
 const tgz = fs
   .readdirSync(vendorDir)
-  .filter((file) => file.startsWith('colveor') && file.endsWith('.tgz'))
+  .filter((file) => file.startsWith(scopePrefix) && file.endsWith('.tgz'))
   .sort()
   .pop();
 
 if (!tgz) {
-  throw new Error('npm pack did not produce a tarball');
+  throw new Error(`npm pack did not produce a tarball matching scope "${scopePrefix}"`);
 }
 
-// Copy to a stable filename for the example app
-const stableName = path.join(vendorDir, 'release.tgz');
-fs.copyFileSync(path.join(vendorDir, tgz), stableName);
-
-//delete the tgz file
+const stablePath = path.join(vendorDir, stableName);
+fs.copyFileSync(path.join(vendorDir, tgz), stablePath);
 fs.unlinkSync(path.join(vendorDir, tgz));
 
-console.log(`Renamed to\x1b[36m release.tgz\x1b[0m in\x1b[33m example/vendor\x1b[0m`);
+console.log(
+  `Packed to \x1b[36m${stableName}\x1b[0m in \x1b[33m${path.relative(rootDir, vendorDir)}\x1b[0m`,
+);

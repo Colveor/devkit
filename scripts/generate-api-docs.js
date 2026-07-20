@@ -491,7 +491,7 @@ async function generateModule(output, moduleConfig, document, packageJson, merge
     version: moduleConfig.version || packageJson.version,
 
     files: {
-      openapi: `${moduleConfig.name}/openapi.json`,
+      openapi: `openapi/${moduleConfig.name}_openapi.json`,
     },
   };
 }

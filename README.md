@@ -22,19 +22,6 @@ Install the devkit and peer dependencies in your package:
 npm install --save-dev @colveor/devkit typescript eslint prettier jest ts-jest @types/jest @types/node
 ```
 
-Initialize Git hooks in your repository:
-
-```bash
-npx husky init
-```
-
-Then wire Husky to the shared configs:
-
-```bash
-echo "npx lint-staged --no-stash --config node_modules/@colveor/devkit/lint-staged.config.js" > .husky/pre-commit
-echo 'npx --no -- commitlint --config node_modules/@colveor/devkit/commitlint.config.js --edit "$1"' > .husky/commit-msg
-```
-
 ## TypeScript
 
 Create a root `tsconfig.json` that extends the shared base config:
@@ -137,6 +124,38 @@ module.exports = {
 };
 ```
 
+For Colveor NestJS libraries that keep specs under `test/**/*.spec.ts`, use the library preset:
+
+```javascript
+/** @type {import('jest').Config} */
+module.exports = {
+  ...require('@colveor/devkit/jest.library.config.js'),
+  moduleNameMapper: {
+    '^@colveor/my-package/package\\.json$': '<rootDir>/package.json',
+  },
+};
+```
+
+## ESLint library preset
+
+For NestJS libraries (`@colveor/core`, `@colveor/fintech`, etc.), extend the library preset to ignore the local example app and relax unsafe-type rules in tests:
+
+```javascript
+const baseConfig = require('@colveor/devkit/eslint.library.config.js');
+
+/** @type {import('eslint').Linter.Config[]} */
+module.exports = [
+  ...baseConfig,
+  {
+    languageOptions: {
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+      },
+    },
+  },
+];
+```
+
 Defaults include:
 
 - `ts-jest` with `tsconfig.test.json`
@@ -194,7 +213,9 @@ See `.github/workflows/release.yml` in this repository for a complete reference 
 
 ## CI
 
-Copy `.github/workflows/ci.yml` from this package as a starting point, or mirror its steps in your own workflow.
+Copy `.github/workflows/library-ci.yml` from this package into consuming libraries (`@colveor/core`, `@colveor/fintech`, etc.).
+
+For this devkit repo itself, use `.github/workflows/ci.yml` which validates config files only.
 
 ```yaml
 - name: Setup Node.js
@@ -217,22 +238,6 @@ Copy `.github/workflows/ci.yml` from this package as a starting point, or mirror
 ```
 
 See `.github/workflows/ci.yml` in this repository for the full template.
-
-## Commitlint
-
-Use the shared Commitlint config:
-
-```javascript
-module.exports = require('@colveor/devkit/commitlint.config.js');
-```
-
-Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/):
-
-```text
-feat(storage): add S3 adapter
-fix(api): handle null tenant id
-chore: update devkit
-```
 
 ## lint-staged
 
@@ -269,22 +274,53 @@ Recommended workspace settings and extensions are in `.vscode/settings.json` and
 2. **Keep overrides minimal** — Only add package-specific rules or paths when necessary.
 3. **Use Conventional Commits** — Required for semantic versioning and automated changelogs.
 4. **Pin devkit versions** — Use semver ranges that match your team's release cadence.
-5. **Run hooks locally** — Husky + lint-staged catch issues before CI.
+5. **Run checks locally** — Use `npm run check` before pushing; CI runs the same steps.
 6. **Use the test tsconfig for Jest** — Keeps test-only types out of production builds.
+
+## Local pack script
+
+Libraries with an `example/` consumer app can pack a local tarball for integration testing:
+
+```json
+{
+  "scripts": {
+    "pack:local": "node node_modules/@colveor/devkit/scripts/pack-local.js"
+  }
+}
+```
+
+Defaults:
+
+- output directory: `example/vendor`
+- stable filename: `release.tgz`
+- tarball scope filter: `colveor`
+
+Override with environment variables when needed:
+
+| Variable | Default | Purpose |
+| -------- | ------- | ------- |
+| `PACK_LOCAL_EXAMPLE_DIR` | `example` | Example app directory |
+| `PACK_LOCAL_VENDOR_DIR` | `<example>/vendor` | Output directory |
+| `PACK_LOCAL_STABLE_NAME` | `release.tgz` | Stable tarball filename |
+| `PACK_LOCAL_SCOPE_PREFIX` | `colveor` | npm pack filename prefix filter |
 
 ## Package contents
 
-| Export                  | Description                       |
-| ----------------------- | --------------------------------- |
-| `tsconfig.base.json`    | Base TypeScript compiler options  |
-| `tsconfig.build.json`   | Production build preset           |
-| `tsconfig.test.json`    | Jest and test file preset         |
-| `eslint.config.js`      | ESLint v9 flat config             |
-| `prettier.config.js`    | Prettier formatting defaults      |
-| `jest.config.js`        | Jest + ts-jest defaults           |
-| `release.config.js`     | Semantic Release pipeline         |
-| `commitlint.config.js`  | Conventional Commits rules        |
-| `lint-staged.config.js` | Pre-commit formatting and linting |
+| Export                    | Description                                    |
+| ------------------------- | ---------------------------------------------- |
+| `tsconfig.base.json`      | Base TypeScript compiler options               |
+| `tsconfig.build.json`     | Production build preset                        |
+| `tsconfig.test.json`      | Jest and test file preset                      |
+| `eslint.config.js`        | ESLint v9 flat config                          |
+| `eslint.library.config.js`| ESLint preset for NestJS libraries             |
+| `prettier.library.config.js`| Prettier preset for NestJS libraries (tabs)    |
+| `jest.config.js`          | Jest + ts-jest defaults                        |
+| `jest.library.config.js`  | Jest preset for `test/**/*.spec.ts` layout     |
+| `release.config.js`       | Semantic Release pipeline                      |
+| `lint-staged.config.js`   | Optional pre-commit formatting and linting     |
+| `pack-local.js`           | Build + pack tarball for local example apps    |
+| `init-library.js`         | Scaffold a new Colveor NestJS library          |
+| `generate-api-docs.js`    | OpenAPI + Postman doc generation helper        |
 
 ## What's included
 
@@ -295,8 +331,7 @@ This package ships ready-to-use configuration for:
 - **Prettier** — consistent formatting defaults
 - **Jest** — ts-jest setup with coverage defaults
 - **Semantic Release** — Conventional Commits, changelog, npm, and GitHub releases
-- **Commitlint** — commit message enforcement
-- **Husky + lint-staged** — local pre-commit and commit-msg hooks
+- **lint-staged config** — optional config for teams that want local git hooks
 - **EditorConfig / Git** — editor and line-ending consistency
 - **GitHub** — CI, release workflow, and issue/PR templates
 - **VS Code** — recommended settings and extensions
