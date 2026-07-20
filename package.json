@@ -49,6 +49,9 @@
   "scripts": {
     "lint": "eslint .",
     "typecheck": "node -e \"console.log('@colveor/devkit has no TypeScript sources; skipping typecheck.');\"",
+    "build": "node -e \"console.log('@colveor/devkit has no build step; skipping build.');\"",
+    "test": "node -e \"console.log('@colveor/devkit has no tests; skipping test.');\"",
+    "test:ci": "node -e \"console.log('@colveor/devkit has no tests; skipping test:ci.');\"",
     "check": "npm run lint && npm run validate",
     "format": "prettier --check .",
     "format:check": "prettier --check .",
