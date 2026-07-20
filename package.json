@@ -48,7 +48,10 @@
   },
   "scripts": {
     "lint": "eslint .",
+    "typecheck": "node -e \"console.log('@colveor/devkit has no TypeScript sources; skipping typecheck.');\"",
+    "check": "npm run lint && npm run validate",
     "format": "prettier --check .",
+    "format:check": "prettier --check .",
     "format:write": "prettier --write .",
     "validate": "node scripts/validate-configs.js"
   },
